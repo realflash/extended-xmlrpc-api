@@ -49,19 +49,26 @@ function wpext_response($params)
     $args     = $params[3];
 
     // List of Allowed WP Functions
-    $allowed_functions = get_option('allowed_functions');
 
     global $wp_xmlrpc_server;
     // Let's run a check to see if credentials are okay
-    if ( !$user = $wp_xmlrpc_server->login($username, $password) ) {
+    if( !$user = $wp_xmlrpc_server->login($username, $password) ) {
             return $wp_xmlrpc_server->error;
     }
 
-    if (function_exists($method) && in_array($method, $allowed_functions))
+    if(!function_exists($method))
+	{
+		return new IXR_Error( 401, __( 'Sorry, this WP API method does not exist.' ) );
+ 	}
+
+    $allowed_functions = explode(",", get_option('allowed_functions'));
+	if(in_array($method, $allowed_functions))
     {
-        return call_user_func_array($method, $args);      
-    } else {
-	return new IXR_Error( 401, __( 'Sorry, this method does not exist or is not allowed.' ) );
+        return call_user_func_array($method, $args);
+    } 
+	else	
+	{
+		return new IXR_Error( 401, __( 'Sorry, this WP API method is not allowed. See the plugin settings.' ) );
     }
 }
 
@@ -99,45 +106,40 @@ function extapi_register_settings()
 {
     //register settings
     register_setting( 'extapi_settings', 'allowed_functions' );
-    register_setting( 'extapi_settings', 'namespace', 'validate_namespace' );
+#    register_setting( 'extapi_settings', 'namespace', 'validate_namespace' );
 	add_settings_section('extapi_settings_main', '', 'render_extapi_settings_main', 'extapi_settings_page');
 	add_settings_field('allowed_functions', 'Allowed Functions', 'render_allowed_functions', 'extapi_settings_page', 'extapi_settings_main');
-	add_settings_field('namespace', 'Namespace', 'render_namespace', 'extapi_settings_page', 'extapi_settings_main');
+#	add_settings_field('namespace', 'Namespace', 'render_namespace', 'extapi_settings_page', 'extapi_settings_main');
 }
 
-function render_extapi_settings_main() {}
+		function render_extapi_settings_main() {}
 
 function render_allowed_functions() {
 	$functions = get_option('allowed_functions');
-	foreach($functions as $function)
-	{
-		error_log($function);
-	}
-	$functions = implode(",", $functions);
-	error_log($functions);
 	
-	echo "<input id='plugin_text_string' name='allowed_functions' size='40' type='text' value='{$functions}' /><br/>
+	echo "<input id='plugin_text_string' name='allowed_functions' size='80' type='text' value='{$functions}' /><br/>
 Which additional WordPress API functions can be called through XMLRPC. Name only, no brackets or parameters. Separate functions with a comma. If this is blank, then all functions are allowed. Functions allowed through the WordPress XMLRPC API will still be allowed; this plugin does not block them. See the <a href=\"https://developer.wordpress.org/reference/\">WordPress Code Reference</a> for a list of functions. The function must be one your user has access to.<br/>
 <i>Example: wp_create_user,wp_delete_user</i>";
 }
 
-function render_namespace() {
-	$value = get_option('namespace');
-	echo "<input id='plugin_text_string' name='namespace' size='40' type='text' value='{$value}' />";
-}
+#function render_namespace() {
+#	$value = get_option('namespace');
+#	echo "<input id='plugin_text_string' name='namespace' size='20' type='text' value='{$value}' /><br/>
+#The namespace underwhich the additional functions are exported. For example, standard WP XMLRPC calls are exported under the namespace 'wp', which means you call 'wp.getPost' from your XMLRPC client. If you have specified wp_create_user as an allowed function, and 'extapi' is the namespace, then you will call 'extapi.wp_create_user' from your XMLRPC client. Defaults to 'extapi'. Make it short and sweet.";
+#}
 
 /*
  * If the user deletes the namespace, set it back to the default.
  */
-function validate_namespace($input)
-{
-	$input = trim($input);
-	if (empty($input))
-	{
-		$input = 'extapi';
-	}    
-	return $input;
-}
+#function validate_namespace($input)
+#{
+#	$input = trim($input);
+#	if (empty($input))
+#	{
+#		$input = 'extapi';
+#	}    
+#	return $input;
+#}
 
 /*
  * Run this when the plugin is activated. This will update the options with their
@@ -149,22 +151,24 @@ function extapi_install()
     //Make sure settings are registered
     extapi_register_settings();
 
-    //Setup Default Namespace
-    $namespace = get_option('namespace');
-    if (empty($namespace))
-        update_option('namespace','extapi');
+#	I can't see that this is really useful. 
+#    //Setup Default Namespace
+#    $namespace = get_option('namespace');
+ #   if (empty($namespace))
+  #      update_option('namespace','extapi');
 
+#	This creates a huge unreadable list. Assume blank is everything instead
     //Setup Default Allowed Functions
-    $allowed_functions = get_option('allowed_functions');
-    if (empty($allowed_functions))
-    {
-        $allowed_functions = array();
-        $functions = get_defined_functions();
-        foreach ($functions['user'] as $function)
-        {
-            $allowed_functions[] = $function;
-        }
-        update_option('allowed_functions',$allowed_functions);
-    }
+  #  $allowed_functions = get_option('allowed_functions');
+#    if (empty($allowed_functions))
+ #   {
+  #      $allowed_functions = array();
+   #     $functions = get_defined_functions();
+    #    foreach ($functions['user'] as $function)
+ #       {
+#            $allowed_functions[] = $function;
+ #       }
+  #      update_option('allowed_functions',$allowed_functions);
+  #  }
 }
 
