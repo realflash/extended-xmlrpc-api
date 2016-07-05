@@ -100,14 +100,12 @@ function extapi_register_settings()
     //register settings
     register_setting( 'extapi_settings', 'allowed_functions' );
     register_setting( 'extapi_settings', 'namespace', 'validate_namespace' );
-	add_settings_section('extapi_settings_main', 'Main Settings', 'render_extapi_settings_main', 'extapi_settings_page');
+	add_settings_section('extapi_settings_main', '', 'render_extapi_settings_main', 'extapi_settings_page');
 	add_settings_field('allowed_functions', 'Allowed Functions', 'render_allowed_functions', 'extapi_settings_page', 'extapi_settings_main');
 	add_settings_field('namespace', 'Namespace', 'render_namespace', 'extapi_settings_page', 'extapi_settings_main');
 }
 
-function render_extapi_settings_main() {
-echo '<p>Main description of this section here.</p>';
-}
+function render_extapi_settings_main() {}
 
 function render_allowed_functions() {
 	$options = get_option('allowed_functions');
