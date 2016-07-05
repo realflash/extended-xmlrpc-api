@@ -108,13 +108,22 @@ function extapi_register_settings()
 function render_extapi_settings_main() {}
 
 function render_allowed_functions() {
-	$options = get_option('allowed_functions');
-	echo "<input id='plugin_text_string' name='allowed_functions[text_string]' size='40' type='text' value='{$options['text_string']}' />";
+	$functions = get_option('allowed_functions');
+	foreach($functions as $function)
+	{
+		error_log($function);
+	}
+	$functions = implode(",", $functions);
+	error_log($functions);
+	
+	echo "<input id='plugin_text_string' name='allowed_functions' size='40' type='text' value='{$functions}' /><br/>
+Which additional WordPress API functions can be called through XMLRPC. Name only, no brackets or parameters. Separate functions with a comma. If this is blank, then all functions are allowed. Functions allowed through the WordPress XMLRPC API will still be allowed; this plugin does not block them. See the <a href=\"https://developer.wordpress.org/reference/\">WordPress Code Reference</a> for a list of functions. The function must be one your user has access to.<br/>
+<i>Example: wp_create_user,wp_delete_user</i>";
 }
 
 function render_namespace() {
-	$options = get_option('namespace');
-	echo "<input id='plugin_text_string' name='namespace[text_string]' size='40' type='text' value='{$options['text_string']}' />";
+	$value = get_option('namespace');
+	echo "<input id='plugin_text_string' name='namespace' size='40' type='text' value='{$value}' />";
 }
 
 /*
@@ -122,13 +131,13 @@ function render_namespace() {
  */
 function validate_namespace($input)
 {
-        $input = trim($input);
+	$input = trim($input);
 	if (empty($input))
-            $input = 'extapi';
-        
+	{
+		$input = 'extapi';
+	}    
 	return $input;
 }
-
 
 /*
  * Run this when the plugin is activated. This will update the options with their
