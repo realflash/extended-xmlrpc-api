@@ -2,7 +2,7 @@
 /*
 Plugin Name: Extended API
 Plugin URI: https://github.com/realflash/extended-xmlrpc-api
-Description: This makes all of the common WordPress functions available via XML RPC rather than having to use pre-defined WP XML-RPC methods.
+Description: Provides access to the entire WP API over XML RPC rather than being limited to using only the pre-defined WP XML-RPC methods.
 Author: Ian Gibbs
 Version: 0.9
 Author URI: https://github.com/realflash
@@ -103,10 +103,8 @@ function extapi_register_settings()
 {
     //register settings
     register_setting( 'extapi_settings', 'allowed_functions' );
-#    register_setting( 'extapi_settings', 'namespace', 'validate_namespace' );
 	add_settings_section('extapi_settings_main', '', 'render_extapi_settings_main', 'extapi_settings_page');
 	add_settings_field('allowed_functions', 'Allowed Functions', 'render_allowed_functions', 'extapi_settings_page', 'extapi_settings_main');
-#	add_settings_field('namespace', 'Namespace', 'render_namespace', 'extapi_settings_page', 'extapi_settings_main');
 }
 
 		function render_extapi_settings_main() {}
@@ -119,25 +117,6 @@ Which additional WordPress API functions can be called through XMLRPC. Name only
 <i>Example: wp_create_user,wp_delete_user</i>";
 }
 
-#function render_namespace() {
-#	$value = get_option('namespace');
-#	echo "<input id='plugin_text_string' name='namespace' size='20' type='text' value='{$value}' /><br/>
-#The namespace underwhich the additional functions are exported. For example, standard WP XMLRPC calls are exported under the namespace 'wp', which means you call 'wp.getPost' from your XMLRPC client. If you have specified wp_create_user as an allowed function, and 'extapi' is the namespace, then you will call 'extapi.wp_create_user' from your XMLRPC client. Defaults to 'extapi'. Make it short and sweet.";
-#}
-
-/*
- * If the user deletes the namespace, set it back to the default.
- */
-#function validate_namespace($input)
-#{
-#	$input = trim($input);
-#	if (empty($input))
-#	{
-#		$input = 'extapi';
-#	}    
-#	return $input;
-#}
-
 /*
  * Run this when the plugin is activated. This will update the options with their
  * default values.
@@ -147,25 +126,5 @@ function extapi_install()
 {
     //Make sure settings are registered
     extapi_register_settings();
-
-#	I can't see that this is really useful. 
-#    //Setup Default Namespace
-#    $namespace = get_option('namespace');
- #   if (empty($namespace))
-  #      update_option('namespace','extapi');
-
-#	This creates a huge unreadable list. Assume blank is everything instead
-    //Setup Default Allowed Functions
-  #  $allowed_functions = get_option('allowed_functions');
-#    if (empty($allowed_functions))
- #   {
-  #      $allowed_functions = array();
-   #     $functions = get_defined_functions();
-    #    foreach ($functions['user'] as $function)
- #       {
-#            $allowed_functions[] = $function;
- #       }
-  #      update_option('allowed_functions',$allowed_functions);
-  #  }
 }
 
