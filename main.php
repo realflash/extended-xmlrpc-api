@@ -126,5 +126,8 @@ function extapi_install()
 {
     //Make sure settings are registered
     extapi_register_settings();
+
+    //Setup Default Allowed Functions
+    update_option('allowed_functions', 'dummy_value');
 }
 
