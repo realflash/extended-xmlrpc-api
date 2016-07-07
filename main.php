@@ -1,11 +1,11 @@
 <?php
 /*
 Plugin Name: Extended API
-Plugin URI: http://www.michaelgrosser.com
+Plugin URI: https://github.com/realflash/extended-xmlrpc-api
 Description: This makes all of the common WordPress functions available via XML RPC rather than having to use pre-defined WP XML-RPC methods.
-Author: Michael Grosser
-Version: 0.5
-Author URI: http://www.michaelgrosser.com
+Author: Ian Gibbs
+Version: 0.9
+Author URI: https://github.com/realflash
 */
 
 //Check the WP version - Requires 3.0+
@@ -27,9 +27,6 @@ add_filter( 'xmlrpc_methods', 'createXmlRpcMethods' );
  */
 function createXmlRpcMethods($methods)
 {
-    $functions = get_defined_functions();
-
-    $wp_functions = $functions['user'];
     $methods['wpext.callWpMethod'] = 'wpext_response';
     return $methods;
 }
