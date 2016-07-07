@@ -7,7 +7,7 @@ The full WP API is comprehensive, but most of it is only available to plugin cod
 
 ## Which methods does it allow me to call?
 
-Anything in the [Wordpress Function Reference][https://codex.wordpress.org/Function_Reference] that your username has access to.
+Anything in the [Wordpress Function Reference](https://codex.wordpress.org/Function_Reference) that your username has access to.
 
 ## How do I use it?
 
@@ -20,7 +20,7 @@ Anything in the [Wordpress Function Reference][https://codex.wordpress.org/Funct
 
 ### Usage
 
-First you should make sure that you have working code that can interact with the standard supported methods in the [XML-RPC WordPress API][https://codex.wordpress.org/XML-RPC_WordPress_API]. Once you do, you are ready to use this plugin. See also [About Wordpress XML-RPC Support][https://codex.wordpress.org/XML-RPC_Support].
+First you should make sure that you have working code that can interact with the standard supported methods in the [XML-RPC WordPress API](https://codex.wordpress.org/XML-RPC_WordPress_API). Once you do, you are ready to use this plugin. See also [About Wordpress XML-RPC Support](https://codex.wordpress.org/XML-RPC_Support).
 
 Simply set the method name to wpext.callWpMethod, and then pass the WP API method name that you want to call as the first parameter, followed by any other parameters meeded by that method. Exactly how you do this depends upon the XML-RPC client library you are using in your code. So (for example), if you are currently using the XML-RPC API like this:
 
@@ -51,4 +51,3 @@ To protect you from yourself, this setting comes with a dummy value that does no
 ## Security
 
 There are good reasons why the XML-RPC API only has limited methods. Think carefully about whether this plugin is right for you situation, and only enable the methods you really need.
-
