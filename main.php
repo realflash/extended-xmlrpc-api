@@ -55,17 +55,17 @@ function wpext_response($params)
 
     if(!function_exists($method))
 	{
-		return new IXR_Error( 401, __( 'Sorry, this WP API method does not exist.' ) );
+		return new IXR_Error( 401, __( "WP API method $method does not exist." ) );
  	}
 
     $allowed_functions = explode(",", get_option('allowed_functions'));
-	if(in_array($method, $allowed_functions))
+	if(isset($allowed_functions) && ! in_array($method, $allowed_functions))
     {
-        return call_user_func_array($method, $args);
+		return new IXR_Error( 401, __( "WP API method $method is not allowed by your current plugin settings. See Settings > Extended API to enable it." ) );
     } 
 	else	
 	{
-		return new IXR_Error( 401, __( 'Sorry, this WP API method is not allowed. See the plugin settings.' ) );
+        return call_user_func_array($method, $args);
     }
 }
 
