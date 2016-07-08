@@ -65,7 +65,7 @@ function wpext_response($params)
     } 
 	else	
 	{
-        return call_user_func_array($method, $args);
+        return call_user_func($method, $args);
     }
 }
 
