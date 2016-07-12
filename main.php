@@ -103,9 +103,11 @@ function extapi_register_settings()
 {
     //register settings
     register_setting( 'extapi_settings', 'extapi_allowed_functions' );
-	add_settings_section('extapi_settings_main', '', 'render_extapi_settings_main', 'extapi_settings_page');
+	add_settings_section('extapi_settings_main', '', 'extapi_renderSettingsMain', 'extapi_settings_page');
 	add_settings_field('extapi_allowed_functions', 'Allowed Functions', 'extapi_renderAllowedFunctions', 'extapi_settings_page', 'extapi_settings_main');
 }
+
+function extapi_renderSettingsMain() {}
 
 function extapi_renderAllowedFunctions() {
 	$functions = get_option('extapi_allowed_functions');
