@@ -4,7 +4,7 @@ Plugin Name: Extended API
 Plugin URI: https://github.com/realflash/extended-xmlrpc-api
 Description: Provides access to the entire WP API over XML RPC rather than being limited to using only the pre-defined WP XML-RPC methods.
 Author: Ian Gibbs
-Version: 0.9.4
+Version: 0.9.5
 Author URI: https://github.com/realflash
 */
 
