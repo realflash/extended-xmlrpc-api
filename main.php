@@ -4,7 +4,7 @@ Plugin Name: Extended API
 Plugin URI: https://github.com/realflash/extended-xmlrpc-api
 Description: Provides access to the entire WP API over XML RPC rather than being limited to using only the pre-defined WP XML-RPC methods.
 Author: Ian Gibbs
-Version: 0.9
+Version: 0.9.4
 Author URI: https://github.com/realflash
 */
 
@@ -17,7 +17,7 @@ if (version_compare($wp_version, "3.0", "<"))
 }
 
 //Add a filter for XML RPC Methods
-add_filter( 'xmlrpc_methods', 'createXmlRpcMethods' );
+add_filter( 'xmlrpc_methods', 'extapi_createXmlRpcMethods' );
 
 /**
  * Generate the Response
@@ -25,9 +25,9 @@ add_filter( 'xmlrpc_methods', 'createXmlRpcMethods' );
  * @param methods Array - list of existing XMLRPC methods
  * @return methods Array - list of updated XMLRPC methods
  */
-function createXmlRpcMethods($methods)
+function extapi_createXmlRpcMethods($methods)
 {
-    $methods['wpext.callWpMethod'] = 'wpext_response';
+    $methods['wpext.callWpMethod'] = 'extapi_respondToCall';
     return $methods;
 }
 
@@ -37,7 +37,7 @@ function createXmlRpcMethods($methods)
  * @param Array (username, password, wp method name, arguments for method)
  * @return Mixed (response from WP method)
  */
-function wpext_response($params)
+function extapi_respondToCall($params)
 {
     //Separate Params from Request
     $username = $params[0];
@@ -58,8 +58,8 @@ function wpext_response($params)
 		return new IXR_Error( 401, __( "WP API method $method does not exist." ) );
  	}
 
-    $allowed_functions = explode(",", get_option('allowed_functions'));
-	if(isset($allowed_functions) && ! in_array($method, $allowed_functions))
+    $extapi_allowed_functions = explode(",", get_option('extapi_allowed_functions'));
+	if(isset($extapi_allowed_functions) && ! in_array($method, $extapi_allowed_functions))
     {
 		return new IXR_Error( 401, __( "WP API method $method is not allowed by your current plugin settings. See Settings > Extended API to enable it." ) );
     } 
@@ -102,17 +102,15 @@ add_action( 'admin_init', 'extapi_register_settings' );
 function extapi_register_settings()
 {
     //register settings
-    register_setting( 'extapi_settings', 'allowed_functions' );
+    register_setting( 'extapi_settings', 'extapi_allowed_functions' );
 	add_settings_section('extapi_settings_main', '', 'render_extapi_settings_main', 'extapi_settings_page');
-	add_settings_field('allowed_functions', 'Allowed Functions', 'render_allowed_functions', 'extapi_settings_page', 'extapi_settings_main');
+	add_settings_field('extapi_allowed_functions', 'Allowed Functions', 'extapi_renderAllowedFunctions', 'extapi_settings_page', 'extapi_settings_main');
 }
 
-		function render_extapi_settings_main() {}
-
-function render_allowed_functions() {
-	$functions = get_option('allowed_functions');
+function extapi_renderAllowedFunctions() {
+	$functions = get_option('extapi_allowed_functions');
 	
-	echo "<input id='plugin_text_string' name='allowed_functions' size='80' type='text' value='{$functions}' /><br/>
+	echo "<input id='plugin_text_string' name='extapi_allowed_functions' size='80' type='text' value='{$functions}' /><br/>
 Which additional WordPress API functions can be called through XMLRPC. Name only, no brackets or parameters. Separate functions with a comma. If this is blank, then all functions are allowed. Functions allowed through the WordPress XMLRPC API will still be allowed; this plugin does not block them. See the <a href=\"https://developer.wordpress.org/reference/\">WordPress Code Reference</a> for a list of functions. The function must be one your user has access to.<br/>
 <i>Example: wp_create_user,wp_delete_user</i>";
 }
@@ -128,6 +126,6 @@ function extapi_install()
     extapi_register_settings();
 
     //Setup Default Allowed Functions
-    update_option('allowed_functions', 'dummy_value');
+    update_option('extapi_allowed_functions', 'dummy_value');
 }
 
