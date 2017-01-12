@@ -4,7 +4,7 @@ Plugin Name: Extended API
 Plugin URI: https://github.com/realflash/extended-xmlrpc-api
 Description: Provides access to the entire WP API over XML RPC rather than being limited to using only the pre-defined WP XML-RPC methods.
 Author: Ian Gibbs
-Version: 0.9.4
+Version: 0.9.6
 Author URI: https://github.com/realflash
 */
 
@@ -43,7 +43,6 @@ function extapi_respondToCall($params)
     $username = $params[0];
     $password = $params[1];
     $method   = $params[2];
-    $args     = $params[3];
 
     // List of Allowed WP Functions
 
@@ -65,7 +64,21 @@ function extapi_respondToCall($params)
     } 
 	else	
 	{
-        return call_user_func($method, $args);
+    	$first_arg = $params[3];
+		if(is_array($first_arg))
+		{	# Assume all the args are in array, such as for wp_insert_user
+        	return call_user_func($method, $first_arg);
+		}
+		else if(is_scalar($first_arg))
+		{	# Assume all the args are a list of scalars, such as for add_user_meta
+			# Make an array of the remaining arguments
+			$args = [];
+			for($i = 3; $i < count($params); $i++)
+			{
+				$args[] = $params[$i];
+			}
+			return call_user_func_array($method, $args);
+		}
     }
 }
 
@@ -103,9 +116,11 @@ function extapi_register_settings()
 {
     //register settings
     register_setting( 'extapi_settings', 'extapi_allowed_functions' );
-	add_settings_section('extapi_settings_main', '', 'render_extapi_settings_main', 'extapi_settings_page');
+	add_settings_section('extapi_settings_main', '', 'extapi_renderSettingsMain', 'extapi_settings_page');
 	add_settings_field('extapi_allowed_functions', 'Allowed Functions', 'extapi_renderAllowedFunctions', 'extapi_settings_page', 'extapi_settings_main');
 }
+
+function extapi_renderSettingsMain() {}
 
 function extapi_renderAllowedFunctions() {
 	$functions = get_option('extapi_allowed_functions');
