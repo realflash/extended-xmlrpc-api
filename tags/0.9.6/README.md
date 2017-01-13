@@ -1,18 +1,7 @@
-=== Plugin Name ===
-Contributors: realflash
-Donate link: https://humanism.org.uk/donate/
-Tags: api, xml-rpc
-Requires at least: 3.0.1
-Tested up to: 4.5.3
-Stable tag: trunk
-License: GPLv3 or later
-License URI: http://www.gnu.org/licenses/gpl-3.0.html
+# extended-xmlrpc-api
+A WordPress plugin that allows access to the whole WP API via XML-RPC, not just the approved methods.
 
-A WordPress plugin that allows access to the whole WP API via XML-RPC.
-
-== Description ==
-
-## What does it do? ##
+## What does it do?
 
 The full WP API is comprehensive, but most of it is only available to plugin code, not remotely. The official WP XML-RPC API is much smaller. This plugin opens up access to that full internal API remotely so that you can do whatever you want over XML-RPC. 
 
@@ -21,6 +10,15 @@ The full WP API is comprehensive, but most of it is only available to plugin cod
 Anything in the [Wordpress Function Reference](https://codex.wordpress.org/Function_Reference) that your username has access to.
 
 ## How do I use it?
+
+### Install
+
+ * Search for this plugin in the WordPress plugin market place
+ * Install it
+ * Enable it
+ * Choose which methods you want enabled in settings
+
+### Usage
 
 First you should make sure that you have working code that can interact with the standard supported methods in the [XML-RPC WordPress API](https://codex.wordpress.org/XML-RPC_WordPress_API). Once you do, you are ready to use this plugin. See also [About Wordpress XML-RPC Support](https://codex.wordpress.org/XML-RPC_Support).
 
@@ -53,37 +51,3 @@ To protect you from yourself, this setting comes with a dummy value that does no
 ## Security
 
 There are good reasons why the XML-RPC API only has limited methods. Think carefully about whether this plugin is right for your situation, and only enable the methods you really need.
-
-== Installation ==
-
-1. Upload the plugin files to the `/wp-content/plugins/plugin-name` directory, or install the plugin through the WordPress plugins screen directly.
-1. Activate the plugin through the 'Plugins' screen in WordPress.
-1. Use the Settings > Extended API screen to configure the plugin.
-
-== Frequently Asked Questions ==
-
-= Where are all the FAQs? =
-
-Nobody has asked any questions yet, so there are none that are frequently asked.
-
-== Screenshots ==
-
-1. Example code - how I use this plugin. 
-
-== Changelog ==
-
-= 0.9 =
-* Added missing settings screen
-* Removed namespace setting
-* Defaulted to disallowing all methods
-* Added documentation
-* Separated "not permitted" and "doesn't exist" errors
-
-= 0.5 =
-* Original version by Michael Grosser
-
-== Upgrade Notice ==
-
-= 0.9 =
-More secure default to disallow all methods
-
